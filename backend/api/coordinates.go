@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"xyz-robotic/src/backend/database/repository"
+	"backend/database/repository"
 )
 
 func(h Handler) GetCoordinates (w http.ResponseWriter, r *http.Request){

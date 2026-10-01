@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	
 	"github.com/google/uuid"
-	"xyz-robotic/src/backend/core"
+	"backend/core"
 )
 
 func(h Handler) GetCurrentSession (w http.ResponseWriter, r *http.Request){

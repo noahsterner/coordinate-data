@@ -7,11 +7,11 @@ import (
 		
 	"github.com/google/uuid"
 
-	"xyz-robotic/src/backend/database"
-	"xyz-robotic/src/backend/database/repository"
+	"backend/database"
+	"backend/database/repository"
 
-	"xyz-robotic/src/backend/api"
-	"xyz-robotic/src/backend/core"
+	"backend/api"
+	"backend/core"
 )
 
 func main() {

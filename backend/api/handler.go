@@ -1,8 +1,8 @@
 package api
 
 import (
-	"xyz-robotic/src/backend/database/repository"
-	"xyz-robotic/src/backend/core"
+	"backend/database/repository"
+	"backend/core"
 )
 
 type Handler struct {
