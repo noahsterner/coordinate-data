@@ -2,7 +2,7 @@
     "use client"
 
     import List from "../components/List.svelte";
-    import Canvas from "../components/Canvas.svelte";
+    import Map from "../components/Map/Map.svelte";
 
     let path = $state([])
 
@@ -35,7 +35,7 @@
 
 <main>
     <div class="wrapper">
-        <Canvas path={path}></Canvas>
+        <Map path={path}></Map>
         <div class="wrapper--inner">
             <form id="form" action="/api/coordinates" method="GET" onsubmit={submit_event}>
                 <input type="text" name="mapId" id="">
