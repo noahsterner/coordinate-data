@@ -25,10 +25,12 @@ CREATE TABLE IF NOT EXISTS map(
 `
 
 func NewDatabase(dbPath string) (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "./app.db")
+	db, err := sql.Open("sqlite3", dbPath+"?cache=shared&mode=rwc&_journal_mode=WAL&_busy_timeout=5000&_synchronous=NORMAL")
 	if err != nil {
 		return nil, err
 	}
+
+	db.SetMaxOpenConns(1)
 
 	if err := db.Ping(); err != nil {
 		db.Close()
