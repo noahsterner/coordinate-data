@@ -8,4 +8,5 @@ import (
 type Handler struct {
 	Backend *core.Backend
 	CoordinateRepository *repository.CoordinateRepository
+	MapRepository *repository.MapRepository
 }

@@ -65,6 +65,8 @@ func(h Handler) SetRobotMode (w http.ResponseWriter, r *http.Request){
 		h.Backend.CurrentSession = uuid.New()
 		response.MapId = h.Backend.CurrentSession
 		response.RobotMode = request.RobotMode
+
+		h.MapRepository.Create(h.Backend.CurrentSession)
 	}
 
 	w.Header().Set("Content-Type", "application/json")

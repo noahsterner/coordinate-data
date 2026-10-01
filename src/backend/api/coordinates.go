@@ -58,25 +58,31 @@ func(h Handler) GetCoordinates (w http.ResponseWriter, r *http.Request){
 }
 
 func(h Handler) PostCoordinate(w http.ResponseWriter, r *http.Request){
-		var req struct {
-			MapId uuid.UUID `json:"map_id"`
-			X int32 `json:"x"`
-			Y int32 `json:"y"`
-		}
+	type Vector struct {
+		X float64 `json:"x"`
+		Y float64 `json:"y"`
+	}
 
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, "invalid json", http.StatusBadRequest)
-			return
-		}
+	var req struct {
+		MapId uuid.UUID `json:"map_id"`
+		Vector []Vector	`json:"vectors"`
+	}
 
-		if req.MapId == uuid.Nil {
-			http.Error(w, "map_id required", http.StatusBadRequest)
-		}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid json", http.StatusBadRequest)
+		return
+	}
+
+	if req.MapId == uuid.Nil {
+		http.Error(w, "map_id required", http.StatusBadRequest)
+	}
 		
+	for i := 0; i < len(req.Vector); i++ {
+		vector := req.Vector[i]
 		coordinate := repository.Coordinate{
 			MapId: req.MapId,
-			X: req.X,
-			Y: req.Y,
+			X: vector.X,
+			Y: vector.Y,
 		}
 
 		err := h.CoordinateRepository.Create(&coordinate)
@@ -84,6 +90,8 @@ func(h Handler) PostCoordinate(w http.ResponseWriter, r *http.Request){
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		w.Header().Set("Content-Type", "applicaton/json")
-		w.WriteHeader(http.StatusCreated)
 	}
+
+	w.Header().Set("Content-Type", "applicaton/json")
+	w.WriteHeader(http.StatusCreated)
+}

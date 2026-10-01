@@ -11,8 +11,8 @@ type Coordinate struct {
 	MapId uuid.UUID		`json:"map_id"`
 	CreatedAt time.Time	`json:"created_at"`
 	UpdatedAt time.Time	`json:"updated_at"`
-	X int32			`json:"x"`
-	Y int32			`json:"y"`
+	X float64		`json:"x"`
+	Y float64		`json:"y"`
 }
 
 type CoordinateRepository struct {

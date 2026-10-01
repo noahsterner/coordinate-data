@@ -35,6 +35,7 @@ func main() {
 
 	handler := api.Handler{
 		CoordinateRepository: repository.NewCoordinateRepository(db),
+		MapRepository: repository.NewMapRepository(db),
 		Backend: &backend,
 	}
 
