@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"time"
 
 	"database/sql"
@@ -8,11 +9,11 @@ import (
 )
 
 type Coordinate struct {
-	MapId uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	X int32
-	Y int32
+	MapId uuid.UUID		`json:"map_id"`
+	CreatedAt time.Time	`json:"created_at"`
+	UpdatedAt time.Time	`json:"updated_at"`
+	X int32			`json:"x"`
+	Y int32			`json:"y"`
 }
 
 type CoordinateRepository struct {
@@ -50,20 +51,30 @@ func (r *CoordinateRepository) Create(coordinate *Coordinate) error {
 }
 
 func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordinate, error) {
-	query := `SELECT 
-	x, y, map_id, created_at, updated_at
-	FROM coordinates WHERE map_id = ?
-	ORDER BY created_at ASC
-	LIMIT ?
-	OFFSET ?
-	`
+	var query string
+	
+	if(limit > 0) {
+		query = `SELECT 
+		x, y, map_id, created_at, updated_at
+		FROM coordinates WHERE map_id = ?
+		ORDER BY created_at ASC
+		LIMIT ?
+		OFFSET ?
+		`
+	} else {
+		query = `SELECT 
+		x, y, map_id, created_at, updated_at
+		FROM coordinates WHERE map_id = ?
+		ORDER BY created_at ASC
+		`
+	}
 
 	rows, err := r.db.Query(query, roomMap.UUID, limit, offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-
+	
 	var coordinates []Coordinate
 	for rows.Next() {
 		coordinate := Coordinate{}
