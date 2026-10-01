@@ -88,6 +88,7 @@ func(h Handler) PostCoordinate(w http.ResponseWriter, r *http.Request){
 		err := h.CoordinateRepository.Create(&coordinate)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
 	}

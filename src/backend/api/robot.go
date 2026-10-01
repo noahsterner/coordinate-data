@@ -10,10 +10,10 @@ import (
 
 func(h Handler) GetCurrentSession (w http.ResponseWriter, r *http.Request){
 	var response struct {
-		CurrentSession uuid.UUID `json:"current_session"`
+		MapId uuid.UUID `json:"map_id"`
 	}
 
-	response.CurrentSession = h.Backend.CurrentSession
+	response.MapId = h.Backend.CurrentSession
 	
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -59,15 +59,18 @@ func(h Handler) SetRobotMode (w http.ResponseWriter, r *http.Request){
 
 	if request.RobotMode == core.MANUAL {
 		h.Backend.CurrentSession = uuid.Nil
-		response.MapId = uuid.Nil
-		response.RobotMode = request.RobotMode
 	} else if request.RobotMode == core.AUTO {
 		h.Backend.CurrentSession = uuid.New()
-		response.MapId = h.Backend.CurrentSession
-		response.RobotMode = request.RobotMode
 
-		h.MapRepository.Create(h.Backend.CurrentSession)
+		if err := h.MapRepository.Create(h.Backend.CurrentSession); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
+
+	
+	response.RobotMode = request.RobotMode
+	response.MapId = h.Backend.CurrentSession
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
