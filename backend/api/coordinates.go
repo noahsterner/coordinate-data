@@ -94,6 +94,6 @@ func(h Handler) PostCoordinate(w http.ResponseWriter, r *http.Request){
 
 	}
 
-	w.Header().Set("Content-Type", "applicaton/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 }
