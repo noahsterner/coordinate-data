@@ -24,7 +24,7 @@ export default class CanvasController {
     }
 
     background() {
-        this.canvas.style.background = "#11161C"
+        this.canvas.style.background = "#0A141D"
     }
 
     render(camera: Camera, path: Vector[]) {        
@@ -49,7 +49,7 @@ export default class CanvasController {
             camera.y - vector_next.y * camera.scale,
         );
         this.ctx.lineTo(camera.x + vector.x * camera.scale, camera.y - vector.y * camera.scale);
-        this.ctx.strokeStyle = "#5BE299";
+        this.ctx.strokeStyle = "#5BE299"
     }
 
 }

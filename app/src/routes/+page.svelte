@@ -5,6 +5,8 @@
 
     import List from "../components/List.svelte";
     import Map from "../components/Map/Map.svelte";
+    import Button from "../components/Basic/Button.svelte";
+    import Input from "../components/Basic/Input.svelte";
 
     let path = $state([]);
     let robot_mode = $state(0);
@@ -112,15 +114,15 @@
 
 <main class="main">
     <div class="topbar">
-        <button onclick={toggle_automode}>Start Automode</button>
+        <Button onclick={toggle_automode}>Start Automode</Button>
 
 
         <form id="form" action="/api/coordinates" method="GET" onsubmit={submit_event}>
-            <input type="text" name="mapId" id="">
-            <button>Draw Map</button>
+            <Input type="text" name="mapId" id="" />
+            <Button>Draw Map</Button>
         </form>
         
-        <button onclick={toggle_list}>Show Maps</button>
+        <Button onclick={toggle_list}>Show Maps</Button>
 
     </div>
     <Map path={path} robot_mode={robot_mode}></Map>
@@ -130,6 +132,9 @@
         </div>
     </div>
     <List robot_mode={robot_mode} visible={show_list}/>
+    <div>
+        
+    </div>
 </main>
 
 <style>
@@ -146,17 +151,16 @@
         width: 100%;
 
         justify-content: space-between;
+        gap: 16px;
         padding: 8px;
 
         form {
-            display: flex;
+            display: grid;
+            grid-template-columns: 3fr 1fr;
             gap: 8px;
 
-            width: 400px;
-            
-            input {
-                flex-grow: 2;
-            }
+            max-width: 400px;
+            width: 400%;
         }
     }
 </style>

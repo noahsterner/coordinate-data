@@ -63,9 +63,3 @@
 <canvas bind:this={canvas}>
 
 </canvas>
-
-<style>
-    canvas {
-        border: 1px solid black;
-    }
-</style>
