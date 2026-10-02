@@ -2,13 +2,14 @@
     import type { Vector } from "./map.svelte.ts";
 
     type Props = {
+        robot_mode: number;
         canvas_height: number;
         canvas_width: number;
         path: Vector[];
         origo: Vector;
     };
 
-    let { path, canvas_height, canvas_width, origo = $bindable() }: Props = $props();
+    let { robot_mode, path, canvas_height, canvas_width, origo = $bindable() }: Props = $props();
 
     let canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D;
 
@@ -35,8 +36,10 @@
     }
 
     function start_drawing() {
-        ctx.clearRect(0, 0, canvas_width, canvas_height);
-
+        if(robot_mode === 0) {
+            ctx.clearRect(0, 0, canvas_width, canvas_height);
+        }
+        
         for (let i = 0; i < path.length - 1; ++i) {
             let next = i + 1;
 

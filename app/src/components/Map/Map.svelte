@@ -6,10 +6,11 @@
     const canvas_height: number = 600;
 
     type Props = {
+        robot_mode: number;
         path: Vector[];
     };
 
-    let { path }: Props = $props();
+    let { path, robot_mode }: Props = $props();
     
     let origo: Vector = $state({ x: 0, y: 0 })
 
@@ -25,4 +26,4 @@
     })
 </script>
 
-<Canvas bind:origo={origo} canvas_width={canvas_width} canvas_height={canvas_height} path={path} />
+<Canvas bind:origo={origo} canvas_width={canvas_width} canvas_height={canvas_height} path={path} robot_mode={robot_mode} />
