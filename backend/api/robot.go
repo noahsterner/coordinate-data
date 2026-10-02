@@ -28,7 +28,7 @@ func(h Handler) GetRobotMode (w http.ResponseWriter, r *http.Request){
 		RobotMode core.Mode	`json:"robot_mode"`
 	}
 	
-	response.RobotMode = h.Backend.Robot.Mode
+	response.RobotMode = h.Backend.Robot.GetMode()
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(&response); err != nil {
@@ -47,12 +47,12 @@ func(h Handler) SetRobotMode (w http.ResponseWriter, r *http.Request){
 		return
 	}
 
-	if request.RobotMode == h.Backend.Robot.Mode {
+	if request.RobotMode == h.Backend.Robot.GetMode() {
 		http.Error(w, "Mode already set", http.StatusConflict)
 		return
 	}
 		
-	h.Backend.Robot.Mode = request.RobotMode
+	h.Backend.Robot.SetMode(request.RobotMode)
 	var response struct {
 		RobotMode core.Mode	`json:"robot_mode"`
 		MapId uuid.UUID		`json:"map_id"`
