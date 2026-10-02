@@ -56,7 +56,6 @@
             old_map_id = map_id;
             setTimeout(poll_path, 200)
         }
-
     }
 
     async function get_path(map_id: string = "", limit: number = 0, offset: number = 0) {
@@ -116,7 +115,7 @@
             <button onclick={toggle_automode}>Start Automode</button>
         </div>
     </div>
-    <List />
+    <List robot_mode={robot_mode}/>
 </main>
 
 <style>

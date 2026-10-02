@@ -1,31 +1,42 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
+    
+    type Props = {
+        robot_mode: number;
+    };
 
-    let maps = $state([])
+    let { robot_mode }: Props = $props();
 
-    onMount(() => {
-        async function get_maps() {
+    let maps = $state<{uuid: string}[]>([])
+        
+    async function get_maps() {
             const response = await fetch("http://localhost:8080/api/sessions");
             const data = await response.json();
-       	
-		    console.log(data)
-            maps = data
-        }
 
-        
+            if(data) {
+                maps = data
+            }
+    }
+
+    onMount(() => {
         get_maps()
     })
 
-
     $effect(() => {
-        maps;
+        robot_mode;
+
+        if(robot_mode == 0) {
+            get_maps()
+        }
     })
 </script>
 
 <ul>
-    {#each maps as map}
-        <li>{map.uuid}</li>
-    {/each}
+    {#if maps}
+        {#each maps as map}
+            <li>{map.uuid}</li>
+        {/each}
+    {/if}
 </ul>
 
 <style>
