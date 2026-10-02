@@ -25,7 +25,7 @@ func NewCoordinateRepository(db *sql.DB) *CoordinateRepository {
 
 func (r *CoordinateRepository) Create(coordinate *Coordinate) error {
 	query := `INSERT INTO 
-	coordinates(x, y, created_at, updated_at, map_id) 
+	coordinates(x, y, created_at, updated_at, map_uuid) 
 	VALUES(?,?,?,?,?)
 	`
 		
@@ -56,8 +56,8 @@ func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordina
 	
 	if(limit > 0) {
 		query = `SELECT 
-		x, y, map_id, created_at, updated_at
-		FROM coordinates WHERE map_id = ?
+		x, y, map_uuid, created_at, updated_at
+		FROM coordinates WHERE map_uuid = ?
 		ORDER BY created_at ASC
 		LIMIT ?
 		OFFSET ?
@@ -69,12 +69,12 @@ func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordina
 		}
 	} else {
 		query = `SELECT 
-		x, y, map_id, created_at, updated_at
-		FROM coordinates WHERE map_id = ?
+		x, y, map_uuid, created_at, updated_at
+		FROM coordinates WHERE map_uuid = ?
 		ORDER BY created_at ASC
 		`
 
-		rows, err = r.db.Query(query)
+		rows, err = r.db.Query(query, roomMap.UUID)
 		if err != nil {
 			return nil, err
 		}
