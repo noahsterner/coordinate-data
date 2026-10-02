@@ -24,6 +24,10 @@
         show_list = !show_list;
     }
 
+    function clear_canvas() {
+        path = [];
+    }
+
     async function poll_path() {
         if(!polling) {
             return;
@@ -79,7 +83,7 @@
     onMount(async () => {
         robot_mode = await fetch_robot_mode();
 
-        if(robot_mode === 0) {
+        if(robot_mode === 1) {
             toggle_automode();
         }
     })
@@ -87,8 +91,10 @@
 
 <main class="main">
     <div class="topbar">
-        <Button onclick={toggle_automode}>Start Automode</Button>
-
+        <div>
+            <Button onclick={toggle_automode}>Start Automode</Button>
+            <Button onclick={clear_canvas}>Clear Canvas</Button>
+        </div>
 
         <form id="form" action="/api/coordinates" method="GET" onsubmit={submit_event}>
             <Input type="text" name="mapId" id="" />
