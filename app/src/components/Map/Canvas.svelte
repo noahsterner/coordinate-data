@@ -36,10 +36,8 @@
     }
 
     function start_drawing() {
-        if(robot_mode === 0) {
-            ctx.clearRect(0, 0, canvas_width, canvas_height);
-        }
-        
+        ctx.clearRect(0, 0, canvas_width, canvas_height);
+        ctx.beginPath()
         for (let i = 0; i < path.length - 1; ++i) {
             let next = i + 1;
 
@@ -83,8 +81,6 @@
 
                 origo.x = origo_down.x + dx;
                 origo.y = origo_down.y + dy;
-
-                console.log(e);
             }
         };
 

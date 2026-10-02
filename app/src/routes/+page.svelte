@@ -17,28 +17,24 @@
 
     async function poll_path() {
         if(!polling) {
-            path = []
             return;
         }
 
         const data = await get_path(old_map_id, limit, offset)
-        console.log(data);
 
-        if(data) {
+        if(data.length > 0) {
             offset += data.length;
             path.push(...data as []);
-        } else if(!data && robot_mode === 0) {
+        } else if(data.length <= 0 && robot_mode === 0) {
             polling = false;
             return;
         }
 
-
         if(!polling) {
-            path = []
             return;
         }
 
-        setTimeout(poll_path, 100)
+        setTimeout(poll_path, 150)
     }
 
     async function toggle_automode() {
@@ -54,6 +50,7 @@
         map_id = data.map_id;
 
         if(robot_mode === 1) {
+            path = [];
             offset = 0;
             polling = true;
             old_map_id = map_id;
