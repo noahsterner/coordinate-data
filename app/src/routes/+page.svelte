@@ -133,11 +133,6 @@
 </main>
 
 <style>
-    :global(*, html) {
-        margin: 0; padding: 0;
-        box-sizing: border-box;
-    }
-
     .main {
         position: fixed;
         inset: 0;

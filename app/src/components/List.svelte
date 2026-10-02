@@ -49,15 +49,19 @@
 
         width: fit-content;
         height: 90vh;
-        overflow: scroll;
+        overflow-y: scroll;
     }
 
     li {
         list-style: none;
-        padding: 4px;
+        padding: 8px;
 
         &:nth-child(odd) {
-            background-color: lightgray;
+            background-color: #111518;
+        }
+
+        &:nth-child(even) {
+            background-color: #23262c;
         }
     }
 </style>

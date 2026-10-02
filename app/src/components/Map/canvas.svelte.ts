@@ -15,11 +15,16 @@ export default class CanvasController {
 
         this.ctx = ctx;
         this.resize();
+        this.background();
     }
 
     resize() {
         this.canvas.width = this.canvas.parentElement?.clientWidth ?? window.innerWidth;
         this.canvas.height = this.canvas.parentElement?.clientHeight ?? window.innerHeight;
+    }
+
+    background() {
+        this.canvas.style.background = "#11161C"
     }
 
     render(camera: Camera, path: Vector[]) {        
@@ -44,6 +49,7 @@ export default class CanvasController {
             camera.y - vector_next.y * camera.scale,
         );
         this.ctx.lineTo(camera.x + vector.x * camera.scale, camera.y - vector.y * camera.scale);
+        this.ctx.strokeStyle = "#5BE299";
     }
 
 }
