@@ -22,6 +22,7 @@ func(h Handler) GetCurrentSession (w http.ResponseWriter, r *http.Request){
 		return
 	}
 }
+
 func(h Handler) GetRobotMode (w http.ResponseWriter, r *http.Request){
 	var response struct {
 		RobotMode core.Mode	`json:"robot_mode"`

@@ -1,13 +1,16 @@
 package repository
 
 import (
+	"fmt"
 	"time"
 	"database/sql"
 	"github.com/google/uuid"
 )
 
 type Map struct {
-	UUID uuid.UUID
+	UUID uuid.UUID		`json:"uuid"`
+	CreatedAt time.Time	`json:"created_at"`
+	UpdatedAt time.Time	`json:"updated_at"`
 }
 
 type MapRepository struct {
@@ -40,4 +43,39 @@ func(r MapRepository) Create(mapId uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func(r MapRepository) FindAll() ([]Map, error) {
+	query := `SELECT
+	uuid, created_at, updated_at
+	FROM map
+	`
+		
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	
+	fmt.Println(rows)
+	var maps []Map
+	for rows.Next() {
+		room := Map{}
+		err := rows.Scan(
+			&room.UUID,
+			&room.CreatedAt,
+			&room.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		maps = append(maps, room)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return maps, nil
 }
