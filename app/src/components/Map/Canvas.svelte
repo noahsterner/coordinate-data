@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+    import { Camera } from "./camera.svelte.ts";
     import type { Vector } from "./map.svelte.ts";
 
     type Props = {
@@ -6,22 +8,12 @@
         canvas_height: number;
         canvas_width: number;
         path: Vector[];
-        origo: Vector;
     };
 
-    let { robot_mode, path, canvas_height, canvas_width, origo = $bindable() }: Props = $props();
+    let { robot_mode, path, canvas_height, canvas_width }: Props = $props();
 
     let canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D;
-
-    const scale_speed = 0.02 * 1;
-    const max_zoom = 1;
-    const min_zoom = 0.01;
-
-    let scale: number = $state(0.15);
-    let mouse_down: boolean = false;
-
-    let down_offset: Vector = { x: origo.x, y: origo.y };
-    let origo_down: Vector = { x: origo.x, y: origo.y };
+    let camera: Camera;
 
     function draw_px(
         ctx: CanvasRenderingContext2D,
@@ -29,10 +21,10 @@
         vector_next: Vector,
     ) {
         ctx.moveTo(
-            origo.x + vector_next.x * scale,
-            origo.y - vector_next.y * scale,
+            camera.x + vector_next.x * camera.scale,
+            camera.y - vector_next.y * camera.scale,
         );
-        ctx.lineTo(origo.x + vector.x * scale, origo.y - vector.y * scale);
+        ctx.lineTo(camera.x + vector.x * camera.scale, camera.y - vector.y * camera.scale);
     }
 
     function start_drawing() {
@@ -47,47 +39,40 @@
         ctx.stroke();
     }
 
+    onMount(() => {
+        let drag: any = null
+        camera = new Camera(canvas_width/2, canvas_height/2);
+
+
+        canvas.onwheel = (e) => { e.preventDefault(); camera.zoom(e.deltaY); };
+
+        canvas.onmousedown = (e) => {
+            drag = {
+                offest_x: e.offsetX,
+                offest_y: e.offsetY,
+                old_camera_x: camera.x,
+                old_camera_y: camera.y,
+            }
+        };
+
+        canvas.onmousemove = (e) => {
+            if (drag) {
+                let dx = e.offsetX - drag.offest_x;
+                let dy = e.offsetY - drag.offest_y;
+
+                camera.x = drag.old_camera_x + dx;
+                camera.y = drag.old_camera_y + dy;
+            }
+        };
+
+        canvas.onmouseup = (e) => { drag = null; };
+    })
+    
     $effect(() => {
         ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
         canvas.height = canvas_height;
         canvas.width = canvas_width;
-
-        canvas.onwheel = (e) => {
-            e.preventDefault();
-            if (max_zoom > scale && e.deltaY < 0) {
-                scale += scale_speed;
-                if (scale > max_zoom) scale = max_zoom;
-            } else if (min_zoom < scale && e.deltaY > 0) {
-                scale -= scale_speed;
-                if (scale < min_zoom) scale = min_zoom;
-            }
-        };
-
-        canvas.onmousedown = (e) => {
-            e.preventDefault();
-            down_offset.x = e.offsetX;
-            down_offset.y = e.offsetY;
-            origo_down = { x: origo.x, y: origo.y };
-
-            mouse_down = true;
-        };
-
-        canvas.onmousemove = (e) => {
-            e.preventDefault();
-            if (mouse_down) {
-                let dx = e.offsetX - down_offset.x;
-                let dy = e.offsetY - down_offset.y;
-
-                origo.x = origo_down.x + dx;
-                origo.y = origo_down.y + dy;
-            }
-        };
-
-        canvas.onmouseup = (e) => {
-            e.preventDefault();
-            mouse_down = false;
-        };
 
         start_drawing()
     });
