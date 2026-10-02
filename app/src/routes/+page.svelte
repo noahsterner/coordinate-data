@@ -7,6 +7,7 @@
     import Map from "../components/Map/Map.svelte";
     import Button from "../components/Basic/Button.svelte";
     import Input from "../components/Basic/Input.svelte";
+    import { fetch_path, fetch_robot_mode } from "#lib/requests.ts";
 
     let path = $state([]);
     let robot_mode = $state(0);
@@ -28,7 +29,7 @@
             return;
         }
 
-        const data = await get_path(old_map_id, limit, offset)
+        const data = await fetch_path(old_map_id, limit, offset)
 
         if(data.length > 0) {
             offset += data.length;
@@ -66,47 +67,19 @@
         }
     }
 
-    async function get_path(map_id: string = "", limit: number = 0, offset: number = 0) {
-        const form = document.getElementById("form") as HTMLFormElement;
-        const submitter = document.querySelector("#form > button") as HTMLElement;
-        const formData = new FormData(form, submitter);
-
-        let url = new URL("http://localhost:8080/api/coordinates")
-        
-        if(map_id === "") {
-            map_id = formData.get("mapId") as string
-        }
-
-        url.searchParams.append("mapId", map_id);
-        url.searchParams.append("limit", String(limit));
-        url.searchParams.append("page", String(offset));
-
-        const response = await fetch(url);
-        const data = await response.json();
-
-        return data
-    }
-
     async function submit_event(event: SubmitEvent) {
         event.preventDefault()
-        const data = await get_path()
+        const data = await fetch_path()
 
         if(data) {
             path = data
         }
     }
 
-    async function fetch_robot_mode() {
-        const response = await fetch("http://localhost:8080/api/robot/mode");
-        const data = await response.json();
-
-        robot_mode = data.robot_mode;
-    }
-
     onMount(async () => {
-        await fetch_robot_mode();
+        robot_mode = await fetch_robot_mode();
 
-        if(robot_mode === 1) {
+        if(robot_mode === 0) {
             toggle_automode();
         }
     })
