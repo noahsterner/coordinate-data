@@ -50,6 +50,7 @@ func (r *CoordinateRepository) Create(coordinate *Coordinate) error {
 }
 
 func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordinate, error) {
+	var coordinates []Coordinate
 	var err error
 	var query string
 	var rows *sql.Rows
@@ -65,7 +66,7 @@ func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordina
 
 		rows, err = r.db.Query(query, roomMap.UUID, limit, offset)
 		if err != nil {
-			return nil, err
+			return []Coordinate{}, err
 		}
 	} else {
 		query = `SELECT 
@@ -76,13 +77,11 @@ func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordina
 
 		rows, err = r.db.Query(query, roomMap.UUID)
 		if err != nil {
-			return nil, err
+			return []Coordinate{}, err
 		}
 	}
 
 	defer rows.Close()
-	
-	var coordinates []Coordinate
 	for rows.Next() {
 		coordinate := Coordinate{}
 		err := rows.Scan(
@@ -93,14 +92,14 @@ func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordina
 			&coordinate.UpdatedAt,
 		)
 		if err != nil {
-			return nil, err
+			return []Coordinate{}, err
 		}
 
 		coordinates = append(coordinates, coordinate)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return []Coordinate{}, err
 	}
 
 	return coordinates, nil

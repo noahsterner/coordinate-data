@@ -53,7 +53,7 @@ func(r MapRepository) FindAll() ([]Map, error) {
 		
 	rows, err := r.db.Query(query)
 	if err != nil {
-		return nil, err
+		return []Map{}, err
 	}
 	defer rows.Close()
 	
@@ -67,14 +67,14 @@ func(r MapRepository) FindAll() ([]Map, error) {
 			&room.UpdatedAt,
 		)
 		if err != nil {
-			return nil, err
+			return []Map{}, err
 		}
 
 		maps = append(maps, room)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return []Map{}, err
 	}
 
 	return maps, nil
