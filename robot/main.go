@@ -91,7 +91,7 @@ func GeneratePoint() (float64, float64) {
 	turn := rand.Float64()
 	turningRate := rand.Float64()
 
-	if(turn < 5 && turn > 95) {
+	if(turn < 0.05 && turn > 0.95) {
 		rDirection = 0
 	} else if turn > epsilon {
 		epsilon += 0.01
