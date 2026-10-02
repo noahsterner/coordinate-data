@@ -2,10 +2,11 @@
     import { onMount } from "svelte";
     
     type Props = {
+        visible: boolean;
         robot_mode: number;
     };
 
-    let { robot_mode }: Props = $props();
+    let { robot_mode, visible }: Props = $props();
 
     let maps = $state<{uuid: string}[]>([])
         
@@ -31,6 +32,7 @@
     })
 </script>
 
+{#if visible }
 <ul>
     {#if maps}
         {#each maps as map}
@@ -38,9 +40,24 @@
         {/each}
     {/if}
 </ul>
+{/if}
 
 <style>
+    ul {
+        position: absolute;
+        top: 40px; right: 0;
+
+        width: fit-content;
+        height: 90vh;
+        overflow: scroll;
+    }
+
     li {
         list-style: none;
+        padding: 4px;
+
+        &:nth-child(odd) {
+            background-color: lightgray;
+        }
     }
 </style>

@@ -14,6 +14,12 @@ export default class CanvasController {
         }
 
         this.ctx = ctx;
+        this.resize();
+    }
+
+    resize() {
+        this.canvas.width = this.canvas.parentElement?.clientWidth ?? window.innerWidth;
+        this.canvas.height = this.canvas.parentElement?.clientHeight ?? window.innerHeight;
     }
 
     render(camera: Camera, path: Vector[]) {        

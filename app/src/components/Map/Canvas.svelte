@@ -23,6 +23,8 @@
         camera = new Camera(canvas_width/2, canvas_height/2);
         canvasController = new CanvasController(canvas)
 
+        console.log(canvasController);
+
         canvas.onwheel = (e) => { e.preventDefault(); camera.zoom(e.deltaY); };
 
         canvas.onmousedown = (e) => {
@@ -48,15 +50,12 @@
     })
     
     $effect(() => {
-        canvas.height = canvas_height;
-        canvas.width = canvas_width;
-
         canvasController.render(camera, path)
     });
 
     $effect(() => {
         path;
-        
+
         camera.reset(canvas.width, canvas.height)
     })
 </script>

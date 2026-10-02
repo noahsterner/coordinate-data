@@ -15,6 +15,12 @@
     let old_map_id = $state("")
     let polling = false;
 
+    let show_list = $state(false);
+    
+    function toggle_list() {
+        show_list = !show_list;
+    }
+
     async function poll_path() {
         if(!polling) {
             return;
@@ -104,45 +110,58 @@
     })
 </script>
 
-<main>
+<main class="main">
+    <div class="topbar">
+        <button onclick={toggle_automode}>Start Automode</button>
 
+
+        <form id="form" action="/api/coordinates" method="GET" onsubmit={submit_event}>
+            <input type="text" name="mapId" id="">
+            <button>Draw Map</button>
+        </form>
+        
+        <button onclick={toggle_list}>Show Maps</button>
+
+    </div>
+    <Map path={path} robot_mode={robot_mode}></Map>
     <div class="wrapper">
-        <Map path={path} robot_mode={robot_mode}></Map>
-
         <div class="wrapper--inner">
-            <form id="form" action="/api/coordinates" method="GET" onsubmit={submit_event}>
-                <input type="text" name="mapId" id="">
-                <button>Draw Map</button>
-            </form>
-            <button onclick={toggle_automode}>Start Automode</button>
+            
         </div>
     </div>
-    <List robot_mode={robot_mode}/>
+    <List robot_mode={robot_mode} visible={show_list}/>
 </main>
 
 <style>
-    main {
-        width: 800px;
+    :global(*, html) {
+        margin: 0; padding: 0;
+        box-sizing: border-box;
     }
 
-    .wrapper--inner {
-        display: flex;
-        gap: 32px;
+    .main {
+        position: fixed;
+        inset: 0;
+        padding: 0px;
+        overflow: none;
+    }
 
-        form { 
-            flex-grow: 10;
+    .topbar {
+        position: absolute;
+        display: flex;
+        width: 100%;
+
+        justify-content: space-between;
+        padding: 8px;
+
+        form {
             display: flex;
-            gap: 4px;
-            max-width: 100%;
+            gap: 8px;
+
+            width: 400px;
             
             input {
-                flex-grow: 10;
-            }
-
-            button {
-                flex-grow: 1;
+                flex-grow: 2;
             }
         }
     }
-
 </style>
