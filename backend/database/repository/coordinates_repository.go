@@ -50,7 +50,9 @@ func (r *CoordinateRepository) Create(coordinate *Coordinate) error {
 }
 
 func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordinate, error) {
+	var err error
 	var query string
+	var rows *sql.Rows
 	
 	if(limit > 0) {
 		query = `SELECT 
@@ -60,18 +62,24 @@ func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordina
 		LIMIT ?
 		OFFSET ?
 		`
+
+		rows, err = r.db.Query(query, roomMap.UUID, limit, offset)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		query = `SELECT 
 		x, y, map_id, created_at, updated_at
 		FROM coordinates WHERE map_id = ?
 		ORDER BY created_at ASC
 		`
+
+		rows, err = r.db.Query(query)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	rows, err := r.db.Query(query, roomMap.UUID, limit, offset)
-	if err != nil {
-		return nil, err
-	}
 	defer rows.Close()
 	
 	var coordinates []Coordinate
