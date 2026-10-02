@@ -55,6 +55,7 @@ func main() {
 		
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
+			return
 		}
 
 		http.DefaultServeMux.ServeHTTP(w,r)
