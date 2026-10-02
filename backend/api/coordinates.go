@@ -75,6 +75,7 @@ func(h Handler) PostCoordinate(w http.ResponseWriter, r *http.Request){
 
 	if req.MapId == uuid.Nil {
 		http.Error(w, "map_id required", http.StatusBadRequest)
+		return
 	}
 		
 	for i := 0; i < len(req.Vector); i++ {
