@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"fmt"
 	"log"
-		
-	"github.com/google/uuid"
 
 	"backend/database"
 	"backend/database/repository"
@@ -28,15 +26,13 @@ func main() {
 
 	fmt.Println("Initialized DB Schemas")
 	
-	backend := core.Backend{
-		Robot: &core.Robot{Mode: core.MANUAL},
-		CurrentSession: uuid.Nil,
-	}
+	robot := core.NewRobot()
+	backend := core.NewBackend(robot)
 
 	handler := api.Handler{
 		CoordinateRepository: repository.NewCoordinateRepository(db),
 		MapRepository: repository.NewMapRepository(db),
-		Backend: &backend,
+		Backend: backend,
 	}
 
 	http.HandleFunc("GET /api/coordinates", handler.GetCoordinates)
