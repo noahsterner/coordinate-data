@@ -105,8 +105,10 @@
 </script>
 
 <main>
+
     <div class="wrapper">
         <Map path={path} robot_mode={robot_mode}></Map>
+
         <div class="wrapper--inner">
             <form id="form" action="/api/coordinates" method="GET" onsubmit={submit_event}>
                 <input type="text" name="mapId" id="">
