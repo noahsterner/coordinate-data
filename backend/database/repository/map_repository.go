@@ -58,7 +58,8 @@ func(r MapRepository) FindAll() ([]Map, error) {
 	defer rows.Close()
 	
 	fmt.Println(rows)
-	var maps []Map
+
+	maps := []Map{}
 	for rows.Next() {
 		room := Map{}
 		err := rows.Scan(

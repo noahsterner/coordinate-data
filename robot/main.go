@@ -39,7 +39,7 @@ func GetRobotState(modeCh chan<- core.Mode, uuidCh chan<- uuid.UUID) {
 	for {
 		resp, err := http.Get("http://localhost:8080/api/robot/mode")
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 			time.Sleep(time.Second)
 			continue
 		}
@@ -55,16 +55,23 @@ func GetRobotState(modeCh chan<- core.Mode, uuidCh chan<- uuid.UUID) {
 		resp.Body.Close()
 		if response.RobotMode != previousMode {
 			previousMode = response.RobotMode
+			mode, err := GetCurrentSession()
+			
+			if err != nil {
+				log.Println(err)
+				time.Sleep(time.Second)
+				continue
+			}
 
 			modeCh <- response.RobotMode
-			uuidCh <- GetCurrentSession()
+			uuidCh <- mode 
 		}
 
 		time.Sleep(time.Second)
 	}
 }
 
-func GetCurrentSession() uuid.UUID {
+func GetCurrentSession() (uuid.UUID, error){
 	var response struct {
 		MapId	uuid.UUID	`json:"map_id"`
 	}
@@ -72,16 +79,17 @@ func GetCurrentSession() uuid.UUID {
 	resp, err := http.Get("http://localhost:8080/api/robot/session")
 	if err != nil {
 		log.Println(err)
+		return uuid.Nil, err
 	}
+	defer resp.Body.Close()
 
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		log.Println(err)
+		return uuid.Nil, err
 	}
-
-	defer resp.Body.Close()
 	
 
-	return response.MapId
+	return response.MapId, nil
 }
 
 
@@ -91,7 +99,7 @@ func GeneratePoint() (float64, float64) {
 	turn := rand.Float64()
 	turningRate := rand.Float64()
 
-	if(turn < 0.05 && turn > 0.95) {
+	if(turn < 0.05 || turn > 0.95) {
 		rDirection = 0
 	} else if turn > epsilon {
 		epsilon += 0.01
@@ -117,11 +125,12 @@ func StartAutoMode(robot *core.Robot) {
 	var vectors []Vector
 	interval := time.Duration(spacing) * time.Second / time.Duration(speed)
 	
-	now := time.Now()
-
 	vector := Vector{X: x, Y: y}
 	vectors = append(vectors, vector)
+
+	now := time.Now()
 	for {
+
 		if robot.GetMode() != core.AUTO {
 			StopAutoMode(robot)
 			return
@@ -143,18 +152,19 @@ func StartAutoMode(robot *core.Robot) {
 			fmt.Println(request)
 			body, err := json.Marshal(&request)
 			if err != nil {
-				log.Fatalf("Failed to marshal JSON: %s", err)
+				log.Println("Failed to marshal JSON: ", err.Error())
 				continue
 			}
 
 			response, err := http.Post("http://localhost:8080/api/coordinates", "application/json", bytes.NewReader(body))
 			if err != nil {
-				log.Fatalf("POST failed: %s", err)
+				log.Println("POST failed: ", err.Error())
 			}
 			response.Body.Close()
 
 
 			vectors = vectors[:0]
+			now = time.Now()
 		}
 
 		time.Sleep(interval)

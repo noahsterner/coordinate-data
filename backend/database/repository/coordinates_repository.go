@@ -50,7 +50,6 @@ func (r *CoordinateRepository) Create(coordinate *Coordinate) error {
 }
 
 func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordinate, error) {
-	var coordinates []Coordinate
 	var err error
 	var query string
 	var rows *sql.Rows
@@ -82,6 +81,7 @@ func (r *CoordinateRepository) List(roomMap *Map, limit, offset int) ([]Coordina
 	}
 
 	defer rows.Close()
+	coordinates := []Coordinate{}
 	for rows.Next() {
 		coordinate := Coordinate{}
 		err := rows.Scan(
