@@ -10,13 +10,13 @@ import (
 	"math"
 	"math/rand"
 	
+	"robot/core"
 	"github.com/google/uuid"
-	"xyz-robotic/src/robot/core"
 )
 
 const (
 	spacing = 50 // mm
-	speed = 2000 // mm/s
+	speed = 700 // mm/s
 )
 
 type Vector struct {
@@ -25,6 +25,9 @@ type Vector struct {
 
 var x float64 = 0
 var y float64 = 0
+var angle float64 = 0
+
+var epsilon float64 = 0.5
 
 func GetRobotState(modeCh chan<- core.Mode, uuidCh chan<- uuid.UUID) {
 	var response struct {
@@ -83,8 +86,22 @@ func GetCurrentSession() uuid.UUID {
 
 
 func GeneratePoint() (float64, float64) {
-	angle := rand.Float64() * 2 * math.Pi
+	var rDirection int8
 
+	turn := rand.Float64()
+	turningRate := rand.Float64()
+
+	if(turn < 5 && turn > 95) {
+		rDirection = 0
+	} else if turn > epsilon {
+		epsilon += 0.01
+		rDirection = -1
+	} else {
+		epsilon -= 0.01
+		rDirection = 1
+	}
+	
+	angle += float64(rDirection) * turningRate *  math.Pi/5;
 	x += math.Cos(angle) * spacing
 	y += math.Sin(angle) * spacing
 	
